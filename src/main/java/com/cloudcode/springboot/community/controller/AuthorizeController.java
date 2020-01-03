@@ -44,7 +44,7 @@ public class AuthorizeController {
         accessTokenDto.setState(state);
         String accessToken = githubprovider.getAccessToken(accessTokenDto);
         GithubUser githubuser = githubprovider.getUser(accessToken);
-        if(githubuser != null){
+        if (githubuser != null && githubuser.getId() != null) {
             //登陆成功
             //创建user对象并写入数据库
             User user = new User();
@@ -56,10 +56,10 @@ public class AuthorizeController {
             user.setGmtModified(user.getGmtCreate());
             userMapper.insertUser(user);
             //将token写入cookie实现持久化登陆状态
-            response.addCookie(new Cookie("token",token));
+            response.addCookie(new Cookie("token", token));
 
             return "redirect:/";
-        }else{
+        } else {
             //登陆失败
             return "redirect:/";
         }
