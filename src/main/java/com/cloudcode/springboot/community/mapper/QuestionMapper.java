@@ -12,9 +12,15 @@ public interface QuestionMapper {
     @Insert("insert into question (title,description,gmt_create,gmt_modified,creator,tag) values(#{title},#{description},#{gmtCreate},#{gmtModified},#{creator},#{tag})")
     void insertQuestion(Question question);
 
-    @Select("select * from question limit #{offset},#{size}")
-    List<Question> list(Integer offset, Integer size);
-
     @Select("select count(1) from question")
     Integer questionCount();
+
+    @Select("select * from question")
+    List<Question> listAll();
+
+    @Select("select * from question where creator=#{userId}")
+    List<Question> listById(Integer userId);
+
+    @Select("select count(1) from question where creator=#{userId}")
+    Integer questionCountById(Integer userId);
 }
