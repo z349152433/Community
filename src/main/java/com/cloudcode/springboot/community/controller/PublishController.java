@@ -1,7 +1,6 @@
 package com.cloudcode.springboot.community.controller;
 
 import com.cloudcode.springboot.community.mapper.QuestionMapper;
-import com.cloudcode.springboot.community.mapper.UserMapper;
 import com.cloudcode.springboot.community.model.Question;
 import com.cloudcode.springboot.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import static java.lang.System.*;
@@ -18,8 +16,6 @@ import static java.lang.System.*;
 public class PublishController {
     @Autowired
     private QuestionMapper questionMapper;
-    @Autowired
-    private UserMapper userMapper;
 
     @GetMapping("/publish")
     public String publish() {
@@ -50,20 +46,8 @@ public class PublishController {
             return "publish";
         }
 
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null && cookies.length != 0){
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+        User user= (User) request.getSession().getAttribute("user");
+        if(user == null)  return "redirect:/" ;
 
         if (user == null) {
             model.addAttribute("error", "用户未登录");
