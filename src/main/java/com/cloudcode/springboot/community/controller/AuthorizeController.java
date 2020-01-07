@@ -5,6 +5,7 @@ import com.cloudcode.springboot.community.dto.GithubUser;
 import com.cloudcode.springboot.community.mapper.UserMapper;
 import com.cloudcode.springboot.community.model.User;
 import com.cloudcode.springboot.community.provider.Githubprovider;
+import com.cloudcode.springboot.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,9 @@ public class AuthorizeController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Value("${github.client.id}")
     private String clientId;
@@ -52,10 +56,9 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(githubuser.getName());
             user.setAccountId(String.valueOf(githubuser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
+
             user.setAvatarUrl(githubuser.getAvatarUrl());
-            userMapper.insertUser(user);
+            userService.createOrUpdate(user);
             //将token写入cookie实现持久化登陆状态
             response.addCookie(new Cookie("token", token));
 
@@ -66,4 +69,12 @@ public class AuthorizeController {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response) {
+        request.getSession().removeAttribute("user");
+        Cookie cookie=new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
 }

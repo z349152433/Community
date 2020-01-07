@@ -1,10 +1,7 @@
 package com.cloudcode.springboot.community.mapper;
 
 import com.cloudcode.springboot.community.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -16,4 +13,11 @@ public interface UserMapper {
 
     @Select("select * from user where id=#{id}")
     User findById(@Param("id") Integer id);
+
+    @Select("select * from user where account_id=#{accountId}")
+    User findByAccountId(String accountId);
+
+    @Update("update user set name=#{name} ,token=#{token}, gmt_modified=#{gmtModified},avatar_url=#{avatarUrl} where account_ad=#{accountId}")
+    void update(User dbUser);
+
 }
