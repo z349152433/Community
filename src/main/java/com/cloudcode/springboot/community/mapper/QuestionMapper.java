@@ -1,9 +1,11 @@
 package com.cloudcode.springboot.community.mapper;
 
+import com.cloudcode.springboot.community.dto.QuestionDTO;
 import com.cloudcode.springboot.community.model.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,4 +25,7 @@ public interface QuestionMapper {
 
     @Select("select count(1) from question where creator=#{userId}")
     Integer questionCountById(Integer userId);
+
+    @Select("select * from question where id=#{id}")
+    Question findQuestionById(Integer id);
 }
