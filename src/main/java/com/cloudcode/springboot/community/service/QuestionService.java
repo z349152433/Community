@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.System.currentTimeMillis;
+
 @Service
 public class QuestionService {
     @Autowired
@@ -77,5 +79,19 @@ public class QuestionService {
         User user = userMapper.findById(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public void createOrUpdate(Question question) {
+        if(question.getId() == null){
+            //创建新的问题
+            question.setGmtCreate(currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.insertQuestion(question);
+        }else{
+            //更新
+            question.setGmtModified(currentTimeMillis());
+            questionMapper.updateQuestion(question);
+        }
+
     }
 }
