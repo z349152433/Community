@@ -2,6 +2,8 @@ package com.cloudcode.springboot.community.service;
 
 import com.cloudcode.springboot.community.dto.PageDTO;
 import com.cloudcode.springboot.community.dto.QuestionDTO;
+import com.cloudcode.springboot.community.exception.CustomizeErrorCode;
+import com.cloudcode.springboot.community.exception.CustomizeException;
 import com.cloudcode.springboot.community.mapper.QuestionMapper;
 import com.cloudcode.springboot.community.mapper.UserMapper;
 import com.cloudcode.springboot.community.model.Question;
@@ -74,6 +76,9 @@ public class QuestionService {
 
     public QuestionDTO findQuestionById(Integer id) {
         Question question=questionMapper.findQuestionById(id);
+        if(question == null){
+            throw  new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.findById(question.getCreator());
@@ -90,7 +95,10 @@ public class QuestionService {
         }else{
             //更新
             question.setGmtModified(currentTimeMillis());
-            questionMapper.updateQuestion(question);
+            Integer updated=questionMapper.updateQuestion(question);
+            if(updated != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
 
     }
