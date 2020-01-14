@@ -20,11 +20,11 @@ public class UserService {
             userMapper.insertUser(user);
         } else {
             //更新token
+            user.setId(dbUser.getId());
             user.setGmtModified(System.currentTimeMillis());
             user.setAvatarUrl(dbUser.getAvatarUrl());
             user.setName(dbUser.getName());
-            user.setToken(dbUser.getToken());
-            userMapper.update(dbUser);
+            userMapper.update(user);
         }
     }
 }

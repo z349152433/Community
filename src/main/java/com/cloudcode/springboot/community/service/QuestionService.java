@@ -102,4 +102,14 @@ public class QuestionService {
         }
 
     }
+
+    public void incView(Integer id) {
+        Question question = questionMapper.findQuestionById(id);
+        questionMapper.updateViewCount(question.getId(),question.getViewCount()+1);
+    }
+
+    public void incComment(Integer parentId) {
+        Question question = questionMapper.findQuestionById(parentId);
+        questionMapper.updateCommentCount(question.getId(),question.getCommentCount()+1);
+    }
 }
