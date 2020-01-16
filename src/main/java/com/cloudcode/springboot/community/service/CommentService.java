@@ -9,6 +9,7 @@ import com.cloudcode.springboot.community.model.Comment;
 import com.cloudcode.springboot.community.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -19,6 +20,10 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    @Autowired
+    private QuestionService questionService;
+
+    @Transactional
     public void insert(Comment comment) {
         if (comment.getParentId() == null || comment.getParentId() == 0) {
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
@@ -33,6 +38,11 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
+            //更新回复数
+            while (dbComment.getType() ==CommentTypeEnum.COMMENT.getType()){
+                dbComment= commentMapper.selectById(comment.getParentId());
+            }
+            questionService.incComment(dbComment.getParentId());
         }else{
             //回复问题
             Question question = questionMapper.findQuestionById(comment.getParentId());
@@ -40,15 +50,7 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
             commentMapper.insert(comment);
+            questionService.incComment(comment.getParentId());//更新回复数
         }
-    }
-
-    public Integer findParentIdById(Integer id) {
-        return commentMapper.findParentIdById(id);
-    }
-
-
-    public Comment findById(Integer parentId) {
-        return commentMapper.findById(parentId);
     }
 }

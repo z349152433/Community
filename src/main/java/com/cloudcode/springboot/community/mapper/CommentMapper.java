@@ -14,10 +14,4 @@ public interface CommentMapper {
     @Select("select * from comment where id =#{id}")
     Comment selectById(Integer id);
 
-    @Select("select parent_id from comment where id = #{id}")
-    Integer findParentIdById(Integer id);
-
-    @Select("select * from comment where id = #{parentId}")
-    Comment findById(Integer parentId);
-
 }

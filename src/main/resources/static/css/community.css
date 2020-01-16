@@ -17,6 +17,10 @@ body {
     height: 38px;
 }
 
+.media-body{
+    padding-top: 10px;
+}
+
 .question-status {
     font-size: 12px;
     font-weight: normal;
@@ -34,4 +38,14 @@ body {
 
 .jumbotron {
     margin: 50px;
+}
+
+.comment{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-comment{
+    float:right;
+    margin-bottom: 10px;
 }

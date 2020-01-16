@@ -45,16 +45,6 @@ public class CommentController {
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setCommentator(user.getId());
         commentService.insert(comment);
-        //增加回复数
-        if(comment.getType() == CommentTypeEnum.QUESTION.getType()){//评论的是问题
-            questionService.incComment(comment.getParentId());
-        }else {//评论的是评论
-            Comment dbComment=commentService.findById(comment.getParentId());
-            while (dbComment.getParentId() ==CommentTypeEnum.COMMENT.getType()){
-                dbComment=commentService.findById(dbComment.getParentId());
-            }
-            questionService.incComment(dbComment.getParentId());
-        }
         return ResultDTO.okOf();
     }
 }
