@@ -2,6 +2,7 @@ package com.cloudcode.springboot.community.controller;
 
 import com.cloudcode.springboot.community.dto.CommentDTO;
 import com.cloudcode.springboot.community.dto.QuestionDTO;
+import com.cloudcode.springboot.community.enums.CommentTypeEnum;
 import com.cloudcode.springboot.community.service.CommentService;
 import com.cloudcode.springboot.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class QuestionController {
     public String question(@PathVariable(name = "id") Integer id,
                            Model model){
         QuestionDTO questionDTO= questionService.findQuestionById(id);
-        List<CommentDTO> comments=commentService.listByQuestionId(id);
+        List<CommentDTO> comments=commentService.listById(id, CommentTypeEnum.QUESTION.getType());
         //增加阅读数
         questionService.incView(id);
         model.addAttribute("question",questionDTO);

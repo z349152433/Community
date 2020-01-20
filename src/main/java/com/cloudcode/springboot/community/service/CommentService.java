@@ -56,6 +56,8 @@ public class CommentService {
                 dbComment = commentMapper.selectById(comment.getParentId());
             }
             questionService.incComment(dbComment.getParentId());
+            //更新子评论数
+            commentMapper.updateCommentCount(dbComment.getId(),dbComment.getCommentCount()+1);
         } else {
             //回复问题
             Question question = questionMapper.findQuestionById(comment.getParentId());
@@ -67,8 +69,8 @@ public class CommentService {
         }
     }
 
-    public List<CommentDTO> listByQuestionId(Integer id) {
-        List<Comment> comments = commentMapper.listByQuestionId(id, CommentTypeEnum.QUESTION.getType());
+    public List<CommentDTO> listById(Integer id, Integer type) {
+        List<Comment> comments = commentMapper.listByQuestionId(id, type);
         if (comments.size() == 0) return new ArrayList<>();
         //获取去重的评论人
         Set<Integer> commentators = comments.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());
