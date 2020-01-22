@@ -18,7 +18,7 @@ public interface QuestionMapper {
     @Select("select count(1) from question")
     Integer questionCount();
 
-    @Select("select * from question")
+    @Select("select * from question order by gmt_create DESC")
     List<Question> listAll();
 
     @Select("select * from question where creator=#{userId}")
@@ -38,4 +38,7 @@ public interface QuestionMapper {
 
     @Update("update question set comment_count = #{commentCount}  where id = #{id}")
     void updateCommentCount(Integer id, Integer commentCount);
+
+    @Select("select * from question where tag regexp #{tagString} and id != #{id}")
+    List<Question> listRelatedQuestionByTag(String tagString, Integer id);
 }
