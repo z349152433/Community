@@ -23,10 +23,16 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading" th:text="${questionDTO.title}"></h4>
-                    <span class="question-status"><span th:text="${questionDTO.commentCount}"></span>个回复·<span
-                            th:text="${questionDTO.viewCount}"></span>次浏览·<span
-                            th:text="${#dates.format(questionDTO.gmtCreate,'dd MMMM YYYY')}"></span>小时前</span>
+                    <h4  class="media-heading" th:text="${questionDTO.title}"></h4>
+                    <span class="question-status">
+                        <span th:text="${questionDTO.commentCount}"></span>个回复·
+                        <span th:text="${questionDTO.viewCount}"></span>次浏览·
+                        <span th:text="${#dates.format(questionDTO.gmtCreate,'dd MMMM YYYY')}"></span>小时前·
+                         <a th:href="@{'/publish/'+${questionDTO.id}}" class="community-menu"
+                            th:if="${session.user != null && session.user.id == questionDTO.creator}">
+                        <span class="glyphicon  glyphicon-pencil " aria-hidden="true">编辑</span>
+                    </a>
+                    </span>
                 </div>
             </div>
 

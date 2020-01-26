@@ -36,10 +36,22 @@ body {
 }
 
 .community-menu {
-    display: block;
     margin-bottom: 15px;
     color: #999;
     font-size: 13px;
+}
+
+.publish-tag-lab{
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+
+
+.publish-tag-lab .label-info{
+    white-space: normal;
+    margin: 5px 5px;
+    display: inline-block;
 }
 
 .jumbotron {
