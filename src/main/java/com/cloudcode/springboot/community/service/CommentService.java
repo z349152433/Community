@@ -2,12 +2,16 @@ package com.cloudcode.springboot.community.service;
 
 import com.cloudcode.springboot.community.dto.CommentDTO;
 import com.cloudcode.springboot.community.enums.CommentTypeEnum;
+import com.cloudcode.springboot.community.enums.NotificationStatusEnum;
+import com.cloudcode.springboot.community.enums.NotificationTypeEnum;
 import com.cloudcode.springboot.community.exception.CustomizeErrorCode;
 import com.cloudcode.springboot.community.exception.CustomizeException;
 import com.cloudcode.springboot.community.mapper.CommentMapper;
+import com.cloudcode.springboot.community.mapper.NotificationMapper;
 import com.cloudcode.springboot.community.mapper.QuestionMapper;
 import com.cloudcode.springboot.community.mapper.UserMapper;
 import com.cloudcode.springboot.community.model.Comment;
+import com.cloudcode.springboot.community.model.Notification;
 import com.cloudcode.springboot.community.model.Question;
 import com.cloudcode.springboot.community.model.User;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +40,9 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationMapper notificationMapper;
+
     @Transactional
     public void insert(Comment comment) {
         if (comment.getParentId() == null || comment.getParentId() == 0) {
@@ -58,6 +65,8 @@ public class CommentService {
             questionService.incComment(dbComment.getParentId());
             //更新子评论数
             commentMapper.updateCommentCount(dbComment.getId(),dbComment.getCommentCount()+1);
+            //创建通知
+            createNotify(comment, dbComment.getCommentator(), NotificationTypeEnum.REPLY_COMMENT);
         } else {
             //回复问题
             Question question = questionMapper.findQuestionById(comment.getParentId());
@@ -66,7 +75,20 @@ public class CommentService {
             }
             commentMapper.insert(comment);
             questionService.incComment(comment.getParentId());//更新回复数
+            //创建通知
+            createNotify(comment,question.getCreator(), NotificationTypeEnum.REPLY_QUESTION);
         }
+    }
+
+    private void createNotify(Comment comment, Integer receiver, NotificationTypeEnum notificationType) {
+        Notification notification=new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(notificationType.getType());
+        notification.setOuterId(comment.getParentId());
+        notification.setNotifier(comment.getCommentator());
+        notification.setReceiver(receiver);
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notificationMapper.insert(notification);
     }
 
     public List<CommentDTO> listById(Integer id, Integer type) {

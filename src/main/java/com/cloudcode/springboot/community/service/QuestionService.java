@@ -28,7 +28,7 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
-    public PageDTO list(Integer page, Integer size) {
+    public PageDTO list( Integer page, Integer size) {
         PageDTO pageDTO = new PageDTO();
 
         PageHelper.startPage(page, size);

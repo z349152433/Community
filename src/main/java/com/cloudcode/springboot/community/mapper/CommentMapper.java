@@ -1,6 +1,5 @@
 package com.cloudcode.springboot.community.mapper;
 
-import com.cloudcode.springboot.community.dto.CommentDTO;
 import com.cloudcode.springboot.community.model.Comment;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
